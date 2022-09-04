@@ -4,18 +4,17 @@ import com.google.firebase.Timestamp;
 
 public class ScholarData {
 
-    private double PointLatitude, PointLongitude;
+    private double PointLatitude, PointLongitude,SharreableLocation_Lat,SharreableLocation_Long;
     private String LocationName, Name, Branch;
     private int Route, Graduation, Mobile, Roll, Semester, SubscriptionFees;
     private boolean Subscribed, Super;
     private Timestamp SubsscriptionStarts, SubssciptionExpires;
 
-    public ScholarData() {
-    }
-
-    public ScholarData(double pointLatitude, double pointLongitude, String locationName, String name, String branch, int route, int graduation, int mobile, int roll, int semester, int subscriptionFees, boolean subscribed, boolean aSuper, Timestamp subsscriptionStarts, Timestamp subssciptionExpires) {
+    public ScholarData(double pointLatitude, double pointLongitude, double sharreableLocation_Lat, double sharreableLocation_Long, String locationName, String name, String branch, int route, int graduation, int mobile, int roll, int semester, int subscriptionFees, boolean subscribed, boolean aSuper, Timestamp subsscriptionStarts, Timestamp subssciptionExpires) {
         PointLatitude = pointLatitude;
         PointLongitude = pointLongitude;
+        SharreableLocation_Lat = sharreableLocation_Lat;
+        SharreableLocation_Long = sharreableLocation_Long;
         LocationName = locationName;
         Name = name;
         Branch = branch;
@@ -31,44 +30,7 @@ public class ScholarData {
         SubssciptionExpires = subssciptionExpires;
     }
 
-    public ScholarData(ScholarData PresentScholar) {
-        PointLatitude = PresentScholar.PointLatitude;
-        PointLongitude = PresentScholar.PointLongitude;
-        LocationName = PresentScholar.LocationName;
-        Name = PresentScholar.Name;
-        Branch = PresentScholar.Branch;
-        Route = PresentScholar.Route;
-        Graduation = PresentScholar.Graduation;
-        Mobile = PresentScholar.Mobile;
-        Roll = PresentScholar.Roll;
-        Semester = PresentScholar.Semester;
-        SubscriptionFees = PresentScholar.SubscriptionFees;
-        Subscribed = PresentScholar.Subscribed;
-        Super = PresentScholar.Super;
-        SubsscriptionStarts = PresentScholar.SubsscriptionStarts;
-        SubssciptionExpires = PresentScholar.SubssciptionExpires;
-    }
-
-
-    @Override
-    public String toString() {
-        return "ScholarData{" +
-                "PointLatitude=" + PointLatitude +
-                ", PointLongitude=" + PointLongitude +
-                ", LocationName='" + LocationName + '\'' +
-                ", Name='" + Name + '\'' +
-                ", Branch='" + Branch + '\'' +
-                ", Route=" + Route +
-                ", Graduation=" + Graduation +
-                ", Mobile=" + Mobile +
-                ", Roll=" + Roll +
-                ", Semester=" + Semester +
-                ", SubscriptionFees=" + SubscriptionFees +
-                ", Subscribed=" + Subscribed +
-                ", Super=" + Super +
-                ", SubsscriptionStarts=" + SubsscriptionStarts +
-                ", SubssciptionExpires=" + SubssciptionExpires +
-                '}';
+    public ScholarData() {
     }
 
     public double getPointLatitude() {
@@ -85,6 +47,22 @@ public class ScholarData {
 
     public void setPointLongitude(double pointLongitude) {
         PointLongitude = pointLongitude;
+    }
+
+    public double getSharreableLocation_Lat() {
+        return SharreableLocation_Lat;
+    }
+
+    public void setSharreableLocation_Lat(double sharreableLocation_Lat) {
+        SharreableLocation_Lat = sharreableLocation_Lat;
+    }
+
+    public double getSharreableLocation_Long() {
+        return SharreableLocation_Long;
+    }
+
+    public void setSharreableLocation_Long(double sharreableLocation_Long) {
+        SharreableLocation_Long = sharreableLocation_Long;
     }
 
     public String getLocationName() {
@@ -190,5 +168,4 @@ public class ScholarData {
     public void setSubssciptionExpires(Timestamp subssciptionExpires) {
         SubssciptionExpires = subssciptionExpires;
     }
-
 }

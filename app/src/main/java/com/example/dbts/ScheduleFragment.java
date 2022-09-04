@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -40,16 +39,14 @@ public class ScheduleFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
+    private static final int Counter = 0;
     // Some Variable Initialization :
     private LinearLayout StoppagePointLinearLayout;
-
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
     private int Route_Number;
     private View view;
-    private static int Counter = 0;
 
     public ScheduleFragment() {
         // Required empty public constructor
@@ -89,8 +86,7 @@ public class ScheduleFragment extends Fragment {
         // Inflate the layout for this fragment
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         if (view == null) {
-            Toast.makeText(getContext(),String.valueOf(++Counter) , Toast.LENGTH_SHORT).show();
-             view = inflater.inflate(R.layout.fragment_schedule, container, false);
+            view = inflater.inflate(R.layout.fragment_schedule, container, false);
         } else {
             ((ViewGroup) view.getParent()).removeView(view);
         }
@@ -103,7 +99,9 @@ public class ScheduleFragment extends Fragment {
 
     @Override
     public void onStart() {
-        SetupStoppagePoints(6);
+        if (Counter < 1) {
+            SetupStoppagePoints(6);
+        }
         super.onStart();
     }
 
@@ -119,7 +117,7 @@ public class ScheduleFragment extends Fragment {
                                 BusesData TravellingData = document.toObject(BusesData.class);
                                 for (int Counter = 0; Counter < TravellingData.getStations().size(); Counter++) {
                                     boolean CampusPosition = Counter == TravellingData.getStations().size() - 1;
-                                    CreateStoppageField_ConstraintLayouts(route_number,TravellingData.getStations().get(Counter),TravellingData.getStations_Time().get(Counter),Counter,CampusPosition,false);
+                                    CreateStoppageField_ConstraintLayouts(route_number, TravellingData.getStations().get(Counter), TravellingData.getStations_Time().get(Counter), Counter, CampusPosition, false);
                                 }
                             }
                         } else {
@@ -130,9 +128,9 @@ public class ScheduleFragment extends Fragment {
     }
 
 
-    private void CreateStoppageField_ConstraintLayouts(int route_number, String StoppagePointName, String StoppagePointTime,int Counter,boolean CampusArrived,boolean Active) {
+    private void CreateStoppageField_ConstraintLayouts(int route_number, String StoppagePointName, String StoppagePointTime, int Counter, boolean CampusArrived, boolean Active) {
         ConstraintLayout constraintLayout = new ConstraintLayout(getActivity());
-        constraintLayout.setId(route_number+23951+Counter); // setting a unique id
+        constraintLayout.setId(route_number + 23951 + Counter); // setting a unique id
         ConstraintLayout.LayoutParams constraintLayoutParams = new ConstraintLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         constraintLayoutParams.setMargins(0, 0, 0, 10);
         constraintLayout.setLayoutParams(constraintLayoutParams);
@@ -143,28 +141,28 @@ public class ScheduleFragment extends Fragment {
         constraintSet.clone(constraintLayout);
 
         TextView Time = new TextView(getContext());
-        Time.setId(route_number+79823+Counter);
+        Time.setId(route_number + 79823 + Counter);
         Time.setText(StoppagePointTime);
         Time.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 22);
         Time.setTextColor(getResources().getColor(R.color.black));
         constraintLayout.addView(Time);
-        constraintSet.connect(Time.getId(),ConstraintSet.END,constraintLayout.getId(),ConstraintSet.END,0);
-        constraintSet.connect(Time.getId(),ConstraintSet.TOP,constraintLayout.getId(),ConstraintSet.TOP,0);
-        constraintSet.constrainWidth(Time.getId(),ConstraintSet.WRAP_CONTENT);
+        constraintSet.connect(Time.getId(), ConstraintSet.END, constraintLayout.getId(), ConstraintSet.END, 0);
+        constraintSet.connect(Time.getId(), ConstraintSet.TOP, constraintLayout.getId(), ConstraintSet.TOP, 0);
+        constraintSet.constrainWidth(Time.getId(), ConstraintSet.WRAP_CONTENT);
         constraintSet.applyTo(constraintLayout);
 
         TextView BusStoppagePointName = new TextView(getContext());
-        BusStoppagePointName.setId(route_number+18350+Counter);
+        BusStoppagePointName.setId(route_number + 18350 + Counter);
         BusStoppagePointName.setText(StoppagePointName.toUpperCase(Locale.ROOT));
         BusStoppagePointName.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
         BusStoppagePointName.setTextColor(getResources().getColor(R.color.black));
-        constraintSet.connect(BusStoppagePointName.getId(),ConstraintSet.START,constraintLayout.getId(),ConstraintSet.START,0);
-        constraintSet.connect(BusStoppagePointName.getId(),ConstraintSet.TOP,constraintLayout.getId(),ConstraintSet.TOP,0);
-        constraintSet.constrainWidth(BusStoppagePointName.getId(),ConstraintSet.WRAP_CONTENT);
+        constraintSet.connect(BusStoppagePointName.getId(), ConstraintSet.START, constraintLayout.getId(), ConstraintSet.START, 0);
+        constraintSet.connect(BusStoppagePointName.getId(), ConstraintSet.TOP, constraintLayout.getId(), ConstraintSet.TOP, 0);
+        constraintSet.constrainWidth(BusStoppagePointName.getId(), ConstraintSet.WRAP_CONTENT);
         constraintSet.applyTo(constraintLayout);
 
         //for Active Bus Stoppage Point Name - Active = true
-        if(Active) {
+        if (Active) {
             BusStoppagePointName.setTypeface(null, Typeface.BOLD);
             TextView CurrentStoppagePoint = new TextView(getContext());
             CurrentStoppagePoint.setId(route_number + 101);
@@ -198,9 +196,9 @@ public class ScheduleFragment extends Fragment {
         });
 
         // Background Colour of Constraint Layout - When StoppagePoint is Campus :)
-        if(CampusArrived){
+        if (CampusArrived) {
             constraintLayout.setBackgroundColor(getResources().getColor(R.color.Campus));
-            constraintLayout.setOnLongClickListener(v->{
+            constraintLayout.setOnLongClickListener(v -> {
                 Vibrator vibe = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
                 vibe.vibrate(200);
                 constraintLayout.setBackgroundColor(getResources().getColor(R.color.Campus));
@@ -212,6 +210,9 @@ public class ScheduleFragment extends Fragment {
         constraintLayout.addView(BusStoppagePointName);
         constraintSet.applyTo(constraintLayout);
         StoppagePointLinearLayout.addView(constraintLayout);
+
+        Counter++;
+
     }
 
 }

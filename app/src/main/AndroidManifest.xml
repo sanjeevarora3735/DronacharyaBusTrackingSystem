@@ -16,12 +16,16 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.DBTS">
         <activity
-            android:name=".Dashboard"
-            android:parentActivityName=".Dashboard"
+            android:name=".RealtimeTracker"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.DBTS.GetStarted">
-        </activity>
+            android:theme="@style/Theme.DBTS.GetStarted" />
+        <activity
+            android:name=".Dashboard"
+            android:exported="false"
+            android:parentActivityName=".Dashboard"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.DBTS.GetStarted"></activity>
         <activity
             android:name=".locationRequest"
             android:exported="false"
