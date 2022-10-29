@@ -21,7 +21,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/in_app_logo" />
 
-
     <TextView
         android:id="@+id/College_University_Name"
         android:layout_width="match_parent"

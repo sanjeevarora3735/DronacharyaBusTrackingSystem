@@ -45,9 +45,8 @@ public class Signin extends AppCompatActivity {
             startActivity(new Intent(Signin.this, Signup.class));
         });
         SigninContinue.setOnClickListener(v -> {
-//            if(EmailAddressEditText.getText().toString().trim() != "")
-            SigninWithEmailandPassword(EmailAddressEditText.getText().toString().trim().toLowerCase(),PasswordEditText.getText().toString().trim().toLowerCase());
-//            SigninWithEmailandPassword("sanjeevarora.developer@gmail.com","Lenovo00!");
+//            SigninWithEmailandPassword(EmailAddressEditText.getText().toString().trim().toLowerCase(),PasswordEditText.getText().toString().trim());
+            SigninWithEmailandPassword("sanjeevarora3735@gmail.com","Lenovo00!");
             startActivity(new Intent(getApplicationContext(), Dashboard.class));
         });
     }
@@ -56,7 +55,7 @@ public class Signin extends AppCompatActivity {
     protected void SigninWithEmailandPassword(String email, String password) {
 
         try {
-            mAuth.signInWithEmailAndPassword("sanjeevarora3735@gmail.com", "Lenovo00!")
+            mAuth.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {

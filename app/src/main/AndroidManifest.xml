@@ -16,6 +16,17 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.DBTS">
         <activity
+            android:name=".SplashScreen"
+            android:exported="true"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.DBTS.GetStarted" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".RealtimeTracker"
             android:exported="false"
             android:screenOrientation="portrait"
@@ -25,7 +36,7 @@
             android:exported="false"
             android:parentActivityName=".Dashboard"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.DBTS.GetStarted"></activity>
+            android:theme="@style/Theme.DBTS.GetStarted" />
         <activity
             android:name=".locationRequest"
             android:exported="false"
@@ -58,14 +69,14 @@
             android:theme="@style/Theme.DBTS.GetStarted" />
         <activity
             android:name=".GetStarted"
-            android:exported="true"
+            android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.DBTS.GetStarted">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
         </activity>
 
         <meta-data

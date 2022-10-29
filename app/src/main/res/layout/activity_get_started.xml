@@ -40,7 +40,7 @@
         android:layout_width="358dp"
         android:layout_height="52dp"
         android:layout_marginTop="20dp"
-        android:text="Tracking of your child and bus during travelling in college bus "
+        android:text="Track your college bus here and stop getting bored while waiting for your bus."
         android:textAlignment="center"
         android:textColor="#A9AABE"
         android:textSize="16sp"

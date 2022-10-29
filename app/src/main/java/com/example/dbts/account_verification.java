@@ -13,11 +13,14 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class account_verification extends AppCompatActivity {
     // Top Declaration Block For All Elements & Members
@@ -28,6 +31,8 @@ public class account_verification extends AppCompatActivity {
     private TextView SendLink;
     private long pressedTime;
     private TextView ErrorDisplay;
+    private int GeneratedOTP;
+    VerificationMail sendmail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +41,10 @@ public class account_verification extends AppCompatActivity {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         // FindViewById @ ToolBar
         toolbar = findViewById(R.id.ToolBar);
+
+        sendmail = new VerificationMail();
+        GeneratedOTP = sendmail.getVerification_Code();
+
 
         // FindViewById @ TextInputEditText : OTP CODE
         CODE1 = findViewById(R.id.CODE1EditText);
@@ -71,15 +80,15 @@ public class account_verification extends AppCompatActivity {
         });
 
 
+
+
         // OnClickListener @ Continue Button - Verification Button Done
         ContinueButton.setOnClickListener(v ->{
             // Fetching The Right Code For The Verification :
-            Intent intent = getIntent();
-            String OTP = intent.getStringExtra("VerificationCode");
             String EnteredOTP = String.format("%s%s%s%s", CODE1.getText().toString(), CODE2.getText().toString(), CODE3.getText().toString(), CODE4.getText().toString());
             if((CODE1.getText().toString()).equalsIgnoreCase("") || (CODE2.getText().toString()).equalsIgnoreCase("")|| (CODE3.getText().toString()).equalsIgnoreCase("")|| (CODE4.getText().toString()).equalsIgnoreCase("")){
                 ErrorDisplay.setText(R.string.CodeBlankError);
-            }else if(!EnteredOTP.equalsIgnoreCase(OTP)){
+            }else if(!EnteredOTP.equalsIgnoreCase(String.valueOf(GeneratedOTP))){
                 ErrorDisplay.setText(R.string.CodeWrongError);
             }
             else {
@@ -175,6 +184,20 @@ public class account_verification extends AppCompatActivity {
         if (hadContentDescription)
             toolbar.setLogoDescription(null);
         return logoIcon;
+    }
+
+    void EmailVerificationLink(String Email){
+
+            sendmail.ExecuteVerificationMail(Email, GeneratedOTP);
+
+            Toast.makeText(this, "Check Your Mail ....", Toast.LENGTH_LONG).show();
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        EmailVerificationLink(FirebaseAuth.getInstance().getCurrentUser().getEmail().toLowerCase(Locale.ROOT));
     }
 
     @Override
