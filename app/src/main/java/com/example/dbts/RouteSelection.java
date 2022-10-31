@@ -36,10 +36,10 @@ public class RouteSelection extends AppCompatActivity {
     // Initializing some important variable for further use :
     private Button ContinueButton;
     private Toolbar toolbar;
-    private TextView SelectedRouteDescription;
+    private TextView SelectedRouteDescription, ErrorText;
     private String StoppagePointList;
     BusesData TravellingData, FinalTravellingData;
-    private boolean TravellingDataAccessed = false;
+    private boolean TravellingDataAccessed = false, isRouteSelected = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +50,8 @@ public class RouteSelection extends AppCompatActivity {
         // Assigning values to some objects & widgets
         ContinueButton = findViewById(R.id.ContinueButton);
         SelectedRouteDescription = findViewById(R.id.SelectedRouteDescription);
+        ErrorText = findViewById(R.id.ErrorText);
+
 
         // Formatting The Options of ToolBar For Customization
         toolbar = findViewById(R.id.ToolBar);
@@ -61,7 +63,11 @@ public class RouteSelection extends AppCompatActivity {
         // Setting up the on-click listener for the ContinueButton
         ContinueButton.setOnClickListener(v ->
         {
-            startActivity(new Intent(RouteSelection.this, locationRequest.class));
+            if(isRouteSelected){
+            startActivity(new Intent(RouteSelection.this, locationRequest.class));}
+            else {
+                ErrorText.setVisibility(View.VISIBLE);
+            }
         });
 
         // Setting up the on-click listener for the back button
@@ -109,10 +115,17 @@ public class RouteSelection extends AppCompatActivity {
         int Range = Routes + ImageButtonStarting_ID;
         for (int i = ImageButtonStarting_ID+1; i <= Range; i++) {
             ImageButton xImageButton = findViewById(i);
+            xImageButton.setClickable(true);
             xImageButton.setBackgroundResource(R.drawable.route_selector);
         }
         routeImageButton.setBackgroundResource(R.drawable.route_selected);
+        routeImageButton.setClickable(false);
         SettingUpStoppagePoints(routeImageButton.getId() - ImageButtonStarting_ID);
+        isRouteSelected = true;
+        if(TravellingDataAccessed){
+//            Toast.makeText(this, "Fucked Up", Toast.LENGTH_SHORT).show();
+            SelectedRouteDescription.setText("No routes found with selected route no. please try again later !");
+        }
     }
 
     // Here we create the available routes button for the users
@@ -171,9 +184,7 @@ public class RouteSelection extends AppCompatActivity {
     }
 
     private String SetupRouteDescription(List<String> StoppagePoints) {
-
         String UpdatedRouteDescription = "";
-
         for (int i = 0; i < StoppagePoints.size(); i++) {
             UpdatedRouteDescription += StoppagePoints.get(i);
             if (i != StoppagePoints.size() - 1) {
@@ -188,9 +199,20 @@ public class RouteSelection extends AppCompatActivity {
         FinalTravellingData = FetchedBusData;
         TravellingDataAccessed = true;
 
+        String UpdatedRoute = "No routes found with selected route no. please try again later !";
+
+        SetupTextViewDescription(UpdatedRoute,FinalTravellingData);
+
+
+    }
+
+    private void SetupTextViewDescription(String updatedRoute, BusesData finalTravellingData) {
+        String UpdatedRoute = SetupRouteDescription(finalTravellingData.getStations());
+        SelectedRouteDescription.setText(UpdatedRoute.toUpperCase(Locale.ROOT));
     }
 
     public void SettingUpStoppagePoints(int route_number) {
+
         FirebaseFirestore.getInstance().collection("BUSES")
                 .whereEqualTo("Route", route_number)
                 .get()
@@ -201,20 +223,12 @@ public class RouteSelection extends AppCompatActivity {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 TravellingData = document.toObject(BusesData.class);
                                 ApplyingDynamicChanges(TravellingData);
-                                String UpdatedRoute = SetupRouteDescription(TravellingData.getStations());
-                                SelectedRouteDescription.setText(UpdatedRoute.toUpperCase(Locale.ROOT));
                             }
                         }
                     }
                 });
 
-        if(!TravellingDataAccessed){
-            SelectedRouteDescription.setText("No routes found with selected route no. please try again later !");
-        }else {
-            TravellingDataAccessed = false;
-        }
 
-//        Toast.makeText(this, TravellingData.toString(), Toast.LENGTH_SHORT).show();
     }
 
     // Getting ToolBar Logo Button For the functionality of back button

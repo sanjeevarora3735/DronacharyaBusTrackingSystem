@@ -48,7 +48,7 @@ public class GetStarted extends AppCompatActivity {
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
             Toast.makeText(this, "There is someone ...", Toast.LENGTH_SHORT).show();
-//            updateUI(currentUser);
+            updateUI(currentUser);
         }
     }
 

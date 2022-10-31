@@ -11,6 +11,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.util.DisplayMetrics;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -78,6 +79,19 @@ public class RealtimeTracker extends AppCompatActivity implements OnMapReadyCall
         mapView.getMapAsync(this);
 
         mAuth = FirebaseAuth.getInstance();
+
+
+        ///
+
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int height = displayMetrics.heightPixels;
+        int width = displayMetrics.widthPixels;
+
+        Toast.makeText(this, "Height && Width == "+String.valueOf(height)+" && "+String.valueOf(width), Toast.LENGTH_SHORT).show();
+
+
+        ///
 
 
         floatingActionButton = findViewById(R.id.floatingActionButton);
@@ -205,8 +219,8 @@ public class RealtimeTracker extends AppCompatActivity implements OnMapReadyCall
 
     private void UpdateCameraPosition(Location location) {
         if (MapboxMapInitiated) {
-            markerOption_Root.title("Bus Stop");
-            markerOption_Root.setSnippet("Bus Arriving Location");
+            markerOption_Root.title("DCE Bus : 6");
+            markerOption_Root.setSnippet("Live Location");
             Icon icon = drawableToIcon(getApplicationContext(), R.drawable.red_marker, getResources().getColor(R.color.ActivatedRoute));
             markerOption_Root.setIcon(icon);
             markerOption_Root.setPosition(new LatLng(location.getLatitude(), location.getLongitude()));
