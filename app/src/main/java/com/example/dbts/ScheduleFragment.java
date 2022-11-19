@@ -39,14 +39,14 @@ public class ScheduleFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    private static final int Counter = 0;
+    private static  int Counter = 0;
     // Some Variable Initialization :
     private LinearLayout StoppagePointLinearLayout;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
     private int Route_Number;
-    private View view;
+    private static View view;
 
     public ScheduleFragment() {
         // Required empty public constructor
@@ -79,7 +79,6 @@ public class ScheduleFragment extends Fragment {
         }
         setRetainInstance(true);
     }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -87,8 +86,6 @@ public class ScheduleFragment extends Fragment {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         if (view == null) {
             view = inflater.inflate(R.layout.fragment_schedule, container, false);
-        } else {
-            ((ViewGroup) view.getParent()).removeView(view);
         }
 
         // FindViewByID
@@ -101,6 +98,7 @@ public class ScheduleFragment extends Fragment {
     public void onStart() {
         if (Counter < 1) {
             SetupStoppagePoints(6);
+            Counter++;
         }
         super.onStart();
     }

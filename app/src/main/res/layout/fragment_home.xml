@@ -259,7 +259,9 @@
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
+                            app:layout_constraintTop_toTopOf="parent" >
+
+                        </com.mapbox.mapboxsdk.maps.MapView>
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
@@ -284,6 +286,41 @@
                     android:translationZ="1dp"
                     app:layout_constraintStart_toStartOf="@id/MapCard"
                     app:layout_constraintTop_toTopOf="@id/MapCard" />
+
+                <TextView
+                    android:id="@+id/CurrentLocation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:alpha=".4"
+                    android:fontFamily="sans-serif-medium"
+                    android:paddingStart="10dp"
+                    android:paddingTop="5dp"
+                    android:paddingEnd="10dp"
+                    android:paddingBottom="5dp"
+                    android:layout_margin="10dp"
+                    android:text="Location ..."
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    android:translationZ="1dp"
+                    app:layout_constraintBottom_toBottomOf="@id/MapCard"
+                    app:layout_constraintStart_toStartOf="@id/MapCard" />
+                <TextView
+                    android:id="@+id/DistanceLeft"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:alpha=".4"
+                    android:fontFamily="sans-serif-medium"
+                    android:paddingStart="10dp"
+                    android:paddingTop="5dp"
+                    android:paddingEnd="10dp"
+                    android:paddingBottom="5dp"
+                    android:layout_margin="10dp"
+                    android:text="Fetching..."
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    android:translationZ="1dp"
+                    app:layout_constraintBottom_toTopOf="@id/CurrentLocation"
+                    app:layout_constraintStart_toStartOf="@id/MapCard" />
 
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
                     android:id="@+id/floatingActionButton"

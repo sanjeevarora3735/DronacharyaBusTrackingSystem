@@ -13,6 +13,8 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
@@ -49,8 +51,6 @@ import com.mapbox.api.directions.v5.DirectionsCriteria;
 import com.mapbox.api.directions.v5.MapboxDirections;
 import com.mapbox.api.directions.v5.models.DirectionsResponse;
 import com.mapbox.api.directions.v5.models.DirectionsRoute;
-import com.mapbox.geojson.Feature;
-import com.mapbox.geojson.FeatureCollection;
 import com.mapbox.geojson.LineString;
 import com.mapbox.geojson.Point;
 import com.mapbox.mapboxsdk.Mapbox;
@@ -76,8 +76,6 @@ import com.mapbox.mapboxsdk.style.layers.SymbolLayer;
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
 import com.mapbox.mapboxsdk.utils.BitmapUtils;
 
-import java.util.Locale;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -89,18 +87,25 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
+
     // Navigation Route Data Members :
     private static final String ROUTE_LAYER_ID = "route-layer-id";
     private static final String ROUTE_SOURCE_ID = "route-source-id";
     private static final String ICON_LAYER_ID = "icon-layer-id";
     private static final String ICON_SOURCE_ID = "icon-source-id";
-    private static final String RED_PIN_ICON_ID = "red-pin-icon-id";
-    Point origin = Point.fromLngLat(77.175740, 28.580859);
-    Point destination = Point.fromLngLat(0.00, 0.00);
-
+    private static final String RED_PIN_ICON_ID = "blue-pin-icon-id";
+    static Point origin = Point.fromLngLat(77.175740, 28.580859);
+    static int TestCounter = 1;
+    static View view;
     // Elements That are Used in The Current Activity :
+    private static boolean RouteDeveloped = false;
+    private static float DistnMeters = 0;
+    private static boolean SavedInstanceFound = false, MapLoaded = false;
+    private static int ApplicationInstanceExists = 0;
+    Point destination = Point.fromLngLat(0.00, 0.00);
     MapboxMap mapboxMap;
     ScholarData FinalScholarData;
+    private Location LastLocation = new Location(LocationManager.GPS_PROVIDER);
     private MapboxDirections client;
     private String mParam1, mParam2;
     private AutoCompleteTextView BusRouteAutoCompleteTextView;
@@ -112,16 +117,15 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     private FirebaseAuth mAuth;
     private boolean SuperUser = false;
     private MaterialButton ViewBusSchedules;
-    private boolean SavedInstanceFound = false, MapLoaded = false;
     private SharedPreferences sharedPreference_ScholarData;
     private Location UserCurrentLocation;
     private boolean LocationComponentActivated;
     private Marker NearestBusStop;
+    private TextView CurrentLocationView, DistanceLeft;
 
     public HomeFragment() {
         // Required empty public constructor
     }
-
 
     public static HomeFragment newInstance(String param1, String param2) {
         HomeFragment fragment = new HomeFragment();
@@ -157,12 +161,14 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                              Bundle savedInstanceState) {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
 
+
         // MapBox -  Getting Instance @ Api-Key
         Mapbox.getInstance(getContext(), getString(R.string.MapBoxAccessTokenPublic));
 
         // Fetching The View - For further operations
-        View view = inflater.inflate(R.layout.fragment_home, container, false);
-
+        if (view == null) {
+            view = inflater.inflate(R.layout.fragment_home, container, false);
+        }
         // For Routes Selecttion @ Only Root User
         BusRouteAutoCompleteTextView = view.findViewById(R.id.BusRouteAutoCompleteTextView);
 
@@ -178,6 +184,10 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         // Timings of Bus - Arrival & Departure
         originToCampusTime = view.findViewById(R.id.originToCampusTime);
         CampusToOriginTime = view.findViewById(R.id.CampustoOriginTime);
+
+        // Live location textbox...
+        CurrentLocationView = view.findViewById(R.id.CurrentLocation);
+        DistanceLeft = view.findViewById(R.id.DistanceLeft);
 
         // Button To View Bus (Updated) Schedules
         ViewBusSchedules = view.findViewById(R.id.ViewBusSchedules);
@@ -224,7 +234,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                 .origin(origin)
                 .destination(destination)
                 .overview(DirectionsCriteria.OVERVIEW_FULL)
-                .profile(DirectionsCriteria.PROFILE_DRIVING)
+                .profile(DirectionsCriteria.PROFILE_WALKING)
                 .accessToken(getString(R.string.MapBoxAccessTokenSecret))
                 .build();
         client.enqueueCall(new Callback<DirectionsResponse>() {
@@ -238,7 +248,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                     return;
                 }
                 DirectionsRoute currentRoute = response.body().routes().get(0);
-                Toast.makeText(getContext(), "Approx " + currentRoute.distance() / 1000 + "Km", Toast.LENGTH_SHORT).show();
 
                 if (mapboxMap != null) {
                     mapboxMap.getStyle(new Style.OnStyleLoaded() {
@@ -262,7 +271,62 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                         Toast.LENGTH_SHORT).show();
             }
         });
+
+        StartUpdatingLocation(origin, destination);
+        RouteDeveloped = true;
+
     }
+
+    private void setOrigin(Location location) {
+        origin = Point.fromLngLat(location.getLongitude(), location.getLatitude());
+        CurrentLocationView.setText(String.valueOf((float) origin.latitude()) + " | " + String.valueOf((float) origin.longitude()));
+
+    }
+
+    private void StartUpdatingLocation(Point origin, Point destination) {
+        LocationListener mLocationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(@NonNull Location location) {
+                LastLocation = location;
+                setOrigin(LastLocation);
+                Location TarDest = new Location(LocationManager.GPS_PROVIDER);
+                TarDest.setLatitude(destination.latitude());
+                TarDest.setLongitude(destination.longitude());
+                DistnMeters = location.distanceTo(TarDest);
+                if (DistnMeters < 30) {
+                    DistanceLeft.setVisibility(View.GONE);
+                } else {
+                    DistanceLeft.setVisibility(View.VISIBLE);
+                    DistanceLeft.setText(String.valueOf((int) DistnMeters) + " mtrs.");
+                }
+                CameraPosition position = new CameraPosition.Builder()
+                        .target(new LatLng(origin.latitude(), origin.longitude()))
+                        .zoom(14.5)
+                        .tilt(14)
+                        .build();
+                mapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(position), 2000);
+
+            }
+
+        };
+
+        LocationManager locationManager = (LocationManager)
+                getContext().getSystemService(Context.LOCATION_SERVICE);
+        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(getContext(),
+                Manifest.permission.ACCESS_COARSE_LOCATION) !=
+                PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        locationManager.requestLocationUpdates(
+                LocationManager.GPS_PROVIDER,
+                5000,
+                50,
+                mLocationListener);
+
+
+    }
+
 
     private void initSource(@NonNull Style loadedMapStyle) {
         loadedMapStyle.addSource(new GeoJsonSource(ROUTE_SOURCE_ID));
@@ -279,7 +343,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                 PropertyFactory.lineCap(Property.LINE_CAP_ROUND),
                 PropertyFactory.lineJoin(Property.LINE_JOIN_ROUND),
                 PropertyFactory.lineWidth(5f),
-                PropertyFactory.lineColor(Color.parseColor("#009688"))
+                PropertyFactory.lineColor(Color.parseColor("#5192DA"))
         );
         loadedMapStyle.addLayer(routeLayer);
 
@@ -300,8 +364,9 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         SyncBusSchedule(FetchedScholarData.getRoute());
         SuperUser = FetchedScholarData.isSuper();
         FinalScholarData = FetchedScholarData;
-        if(mapboxMap!=null){
-        SetupRoutePosition();}
+        if (mapboxMap != null) {
+            SetupRoutePosition();
+        }
     }
 
     private void SyncBusSchedule(int RouteNumber) {
@@ -357,16 +422,22 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     public void onMapReady(@NonNull MapboxMap mapboxMap) {
         this.mapboxMap = mapboxMap;
         MapLoaded = true;
-        GettingThingsReady();
-        mapboxMap.getUiSettings().setAttributionEnabled(false);
-        mapboxMap.getUiSettings().setLogoEnabled(false);
+        if (MapLoaded) {
+            GettingThingsReady();
+            mapboxMap.getUiSettings().setAttributionEnabled(false);
+            mapboxMap.getUiSettings().setLogoEnabled(false);
+        }
     }
+
 
     @Override
     public void onStart() {
         super.onStart();
+        Toast.makeText(getContext(), "onStart(); Executed", Toast.LENGTH_SHORT).show();
+
         RequestPermissionsFromUser();
         GettingThingsReady();
+
     }
 
 //    private void CameraPositionManagerMiniMap() {
@@ -422,11 +493,11 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     private void SetupRoutePosition() {
         mapboxMap.setStyle(Style.OUTDOORS, style -> {
             CameraPosition position = new CameraPosition.Builder()
-                    .target(new LatLng(AllotedBusStoppagePoint().latitude(), AllotedBusStoppagePoint().longitude()))
-                    .zoom(15)
+                    .target(new LatLng(origin.latitude(), origin.longitude()))
+                    .zoom(14.5)
                     .tilt(14)
                     .build();
-            if( mapboxMap != null){
+            if (mapboxMap != null) {
                 initSource(style);
                 initLayers(style);
                 getRoute(mapboxMap, origin, AllotedBusStoppagePoint());
@@ -434,16 +505,17 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
             EnableLocationComponent(style);
             MarkerOptions markerOptions = new MarkerOptions();
             markerOptions.title("Bus Stop");
-            markerOptions.setSnippet("Bus Arriving Location");
-            Icon icon = drawableToIcon(getContext(), R.drawable.red_marker, R.color.ActivatedRoute);
+            markerOptions.setSnippet("Moti Bagh");
+            IconFactory iconFactory = IconFactory.getInstance(getContext());
+            Icon icon = drawableToIcon(getContext(), R.drawable.markersmall, R.color.ActivatedRoute);
             markerOptions.position(new LatLng(AllotedBusStoppagePoint().latitude(), AllotedBusStoppagePoint().longitude()));
             markerOptions.setIcon(icon);
             mapboxMap.addMarker(markerOptions);
             mapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(position), 2000);
-
         });
-}
+    }
 
+    // Returning the AllotedBusStoppagePoint from the firebase :
     private Point AllotedBusStoppagePoint() {
         return Point.fromLngLat(FinalScholarData.getPointLongitude(), FinalScholarData.getPointLatitude());
     }
