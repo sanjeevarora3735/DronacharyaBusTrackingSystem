@@ -134,6 +134,7 @@
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/InviteFriendsConstraintLayout"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="15dp"
@@ -193,6 +194,7 @@
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
                         <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/HelpSupportConstraintLayout"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="15dp"
@@ -251,6 +253,7 @@
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
                         <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/PricingArrowConstraintLayout"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="15dp"
@@ -308,65 +311,9 @@
                             </LinearLayout>
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
-                        <androidx.constraintlayout.widget.ConstraintLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="15dp"
-                            android:layout_marginEnd="15dp"
-                            android:background="@drawable/profile_preferences"
-                            android:paddingTop="5dp"
-                            android:paddingEnd="10dp"
-                            android:paddingBottom="5dp">
-
-                            <LinearLayout
-                                android:id="@+id/FinancingPartners"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_margin="10dp"
-                                android:orientation="vertical"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent">
-
-                                <TextView
-                                    android:id="@+id/FinancingPartnersBold"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Financing Partners"
-                                    android:textColor="@color/black"
-                                    android:textSize="17dp" />
-
-                                <TextView
-                                    android:id="@+id/FinancingPartnersTagLine"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:paddingStart="2dp"
-                                    android:text="Contact Details"
-                                    android:textSize="12dp" />
-
-                            </LinearLayout>
-
-                            <LinearLayout
-                                android:id="@+id/FinancingPartnersArrow"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:background="@color/white"
-                                android:orientation="vertical"
-                                app:layout_constraintBottom_toBottomOf="@id/FinancingPartners"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintTop_toTopOf="@id/FinancingPartners">
-
-                                <ImageButton
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="center"
-                                    android:background="@color/white"
-                                    android:src="@drawable/ic_baseline_arrow_forward_ios_24" />
-
-                            </LinearLayout>
-                        </androidx.constraintlayout.widget.ConstraintLayout>
 
                         <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/SettingsConstraintLayout"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="15dp"
@@ -533,18 +480,6 @@
 
                     </LinearLayout>
 
-                    <TextView
-                        android:id="@+id/Version_Info"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textAlignment="center"
-                        android:padding="10dp"
-                        android:textColor="@color/black"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        android:text="androidx.test.runner.AndroidJUnitRunner"
-                        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -7,6 +7,7 @@
     <uses-permission android:name="android.permission.INTERNET" /> <!-- Include only if your app benefits from precise location access. -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
 
     <application
         android:allowBackup="true"
@@ -16,21 +17,35 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.DBTS">
         <activity
+            android:name=".LiveBus"
+            android:exported="false"
+            android:parentActivityName=".Dashboard"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.DBTS.GetStarted">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity><activity
+        android:name=".Maintenance"
+        android:exported="false"
+        android:parentActivityName=".Dashboard"
+        android:screenOrientation="portrait"
+        android:theme="@style/Theme.DBTS.GetStarted">
+        <meta-data
+            android:name="android.app.lib_name"
+            android:value="" />
+    </activity>
+        <activity
             android:name=".SplashScreen"
             android:exported="true"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.DBTS.GetStarted" >
+            android:theme="@style/Theme.DBTS.GetStarted">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".RealtimeTracker"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.DBTS.GetStarted" />
         <activity
             android:name=".Dashboard"
             android:exported="false"
@@ -72,11 +87,13 @@
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.DBTS.GetStarted">
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
 
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
-<!--            </intent-filter>-->
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+
+
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
         </activity>
 
         <meta-data

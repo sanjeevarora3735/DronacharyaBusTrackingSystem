@@ -42,6 +42,8 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -99,6 +101,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     static View view;
     // Elements That are Used in The Current Activity :
     private static boolean RouteDeveloped = false;
+    private static String Bus_Number = null;
     private static float DistnMeters = 0;
     private static boolean SavedInstanceFound = false, MapLoaded = false;
     private static int ApplicationInstanceExists = 0;
@@ -122,6 +125,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     private boolean LocationComponentActivated;
     private Marker NearestBusStop;
     private TextView CurrentLocationView, DistanceLeft;
+    private DatabaseReference mDatabase;
+
 
     public HomeFragment() {
         // Required empty public constructor
@@ -212,7 +217,9 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
 
         // Onclick Event For ViewBusSchedules
         ViewBusSchedules.setOnClickListener(v -> {
-            startActivity(new Intent(getContext(), RealtimeTracker.class));
+            Intent FullViewMap = new Intent(getContext(), LiveBus.class);
+            FullViewMap.putExtra("Bus_Number", Bus_Number);
+            startActivity(FullViewMap);
         });
 
         // OnlySuper User Event
@@ -241,10 +248,10 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
             @Override
             public void onResponse(Call<DirectionsResponse> call, Response<DirectionsResponse> response) {
                 if (response.body() == null) {
-                    Toast.makeText(getContext(), "No routes found, make sure you set the right user and access token.", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(getContext(), "No routes found, make sure you set the right user and access token.", Toast.LENGTH_SHORT).show();
                     return;
                 } else if (response.body().routes().size() < 1) {
-                    Toast.makeText(getContext(), "No routes found.", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(getContext(), "No routes found.", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 DirectionsRoute currentRoute = response.body().routes().get(0);
@@ -283,29 +290,28 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
 
     }
 
+    private void getDistance(Location location) {
+        Location TarDest = new Location(LocationManager.GPS_PROVIDER);
+        TarDest.setLatitude(destination.latitude());
+        TarDest.setLongitude(destination.longitude());
+        DistnMeters = location.distanceTo(TarDest);
+        if (DistnMeters < 30) {
+            DistanceLeft.setVisibility(View.GONE);
+        } else {
+            DistanceLeft.setVisibility(View.VISIBLE);
+            DistanceLeft.setText(String.valueOf((int) DistnMeters) + " mtrs.");
+        }
+    }
+
     private void StartUpdatingLocation(Point origin, Point destination) {
         LocationListener mLocationListener = new LocationListener() {
             @Override
             public void onLocationChanged(@NonNull Location location) {
                 LastLocation = location;
                 setOrigin(LastLocation);
-                Location TarDest = new Location(LocationManager.GPS_PROVIDER);
-                TarDest.setLatitude(destination.latitude());
-                TarDest.setLongitude(destination.longitude());
-                DistnMeters = location.distanceTo(TarDest);
-                if (DistnMeters < 30) {
-                    DistanceLeft.setVisibility(View.GONE);
-                } else {
-                    DistanceLeft.setVisibility(View.VISIBLE);
-                    DistanceLeft.setText(String.valueOf((int) DistnMeters) + " mtrs.");
-                }
-                CameraPosition position = new CameraPosition.Builder()
-                        .target(new LatLng(origin.latitude(), origin.longitude()))
-                        .zoom(14.5)
-                        .tilt(14)
-                        .build();
-                mapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(position), 2000);
-
+                getDistance(location);
+                UpdateCameraPosition();
+                ShareBusLocation(LastLocation.getLatitude(), LastLocation.getLongitude());
             }
 
         };
@@ -314,17 +320,41 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                 getContext().getSystemService(Context.LOCATION_SERVICE);
         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(getContext(),
-                Manifest.permission.ACCESS_COARSE_LOCATION) !=
-                PackageManager.PERMISSION_GRANTED) {
+                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
         locationManager.requestLocationUpdates(
                 LocationManager.GPS_PROVIDER,
-                5000,
-                50,
+                1000,
+                10,
                 mLocationListener);
 
+//        locationManager.removeUpdates(mLocationListener); // To Stop location Updates...
 
+
+    }
+
+    private void ShareBusLocation(double latitude, double longitude) {
+
+        if (SuperUser) {
+            Bus_Location mBus_location = new Bus_Location(latitude, longitude);
+            mDatabase = FirebaseDatabase.getInstance().getReference();
+
+            if (Bus_Number != null) {
+                mDatabase.child("DCE_BUSES").child(Bus_Number).child("Live_Location").setValue(mBus_location);
+//                Toast.makeText(getContext(), "Data Uploaded Successfully", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+    }
+
+    private void UpdateCameraPosition() {
+        CameraPosition position = new CameraPosition.Builder()
+                .target(new LatLng(origin.latitude(), origin.longitude()))
+                .zoom(14.5)
+                .tilt(14)
+                .build();
+        mapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(position), 2000);
     }
 
 
@@ -383,6 +413,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
+                                setBus_Number(String.valueOf(document.getId()));
                                 BusesData TravellingData = document.toObject(BusesData.class);
                                 originToCampusTime.setText(TravellingData.getOriginToCampusTime());
                                 CampusToOriginTime.setText(TravellingData.getCampusToOriginTime());
@@ -392,6 +423,11 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                         }
                     }
                 });
+    }
+
+    private void setBus_Number(String bus_Number) {
+        Bus_Number = bus_Number;
+//        Toast.makeText(getContext(), Bus_Number, Toast.LENGTH_SHORT).show();
     }
 
     private void SetupRoutesDropDown() {
@@ -433,7 +469,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onStart() {
         super.onStart();
-        Toast.makeText(getContext(), "onStart(); Executed", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(getContext(), "onStart(); Executed", Toast.LENGTH_SHORT).show();
 
         RequestPermissionsFromUser();
         GettingThingsReady();

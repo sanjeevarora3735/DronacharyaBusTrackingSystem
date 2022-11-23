@@ -30,12 +30,13 @@ public class NotificationFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    private View view;
+    private static View view;
     private ScrollView MessagePanelScrollView;
     private FloatingActionButton NavigateBottom;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private static int alreadySettedup = 0;
 
     public NotificationFragment() {
         // Required empty public constructor
@@ -73,8 +74,9 @@ public class NotificationFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-        view = inflater.inflate(R.layout.fragment_notification, container, false);
-
+        if(view == null) {
+            view = inflater.inflate(R.layout.fragment_notification, container, false);
+        }
         MessagePanelScrollView = view.findViewById(R.id.MessagePanelScrollView);
         NavigateBottom = view.findViewById(R.id.NavigateBottom);
 
@@ -105,7 +107,10 @@ public class NotificationFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        initialJoining(null);
+        if(alreadySettedup == 0){
+            initialJoining(null);
+            alreadySettedup++;
+        }
     }
 
     private void initialJoining(String Via) {
@@ -138,7 +143,7 @@ public class NotificationFragment extends Fragment {
 //        SimpleTextView.setTypeface(null, Typeface.BOLD);
 //        SimpleTextView.setTextColor(getResources().getColor(R.color.white));
 
-        MessagePanel.addView(SimpleTextView);
+        MessagePanel.addView(SimpleTextView,0);
 
         MessagePanelScrollView.fullScroll(MessagePanelScrollView.getBottom());
 

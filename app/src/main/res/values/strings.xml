@@ -23,6 +23,7 @@
 
     <string name="Email">sanjeevarora.developer@gmail.com</string>
     <string name="Password">zgjakvzdsoddwjfc</string>
+    <string name="InviteFriendsString">Just share this code with your friends and ask them to signup and add this code. Both of you will get ahead of the waitlist</string>
     <!-- TODO: Routes Lists For The College Buses -->
     <string-array name="Routes">
         <item>Route No. 1</item>

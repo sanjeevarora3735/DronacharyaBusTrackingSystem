@@ -99,7 +99,7 @@ public class Signin extends AppCompatActivity {
             Intent UpdateUI = new Intent(Signin.this, Dashboard.class);
 //        UpdateUI.putExtra("CurrentUserObject", (Bundle) o);
             startActivity(UpdateUI);
-            Toast.makeText(getApplicationContext(), currFirebaseUser.getEmail().toString(), Toast.LENGTH_SHORT).show();
+//            Toast.makeText(getApplicationContext(), currFirebaseUser.getEmail().toString(), Toast.LENGTH_SHORT).show();
         }
     }
 }

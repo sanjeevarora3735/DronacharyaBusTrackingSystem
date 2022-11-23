@@ -47,13 +47,14 @@ public class GetStarted extends AppCompatActivity {
         super.onStart();
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
-            Toast.makeText(this, "There is someone ...", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, "There is someone ...", Toast.LENGTH_SHORT).show();
             updateUI(currentUser);
         }
     }
 
     private void updateUI(FirebaseUser currFirebaseUser) {
-        Toast.makeText(this, "Update UI Function Called", Toast.LENGTH_SHORT).show();
-        startActivity(new Intent(GetStarted.this, Dashboard.class));
+//        Toast.makeText(this, "Update UI Function Called", Toast.LENGTH_SHORT).show();
+
+    startActivity(new Intent(GetStarted.this, Dashboard.class));
     }
 }
