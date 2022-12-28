@@ -45,9 +45,9 @@ public class Signin extends AppCompatActivity {
             startActivity(new Intent(Signin.this, Signup.class));
         });
         SigninContinue.setOnClickListener(v -> {
-//            SigninWithEmailandPassword(EmailAddressEditText.getText().toString().trim().toLowerCase(),PasswordEditText.getText().toString().trim());
-            SigninWithEmailandPassword("sanjeevarora3735@gmail.com","Lenovo00!");
-            startActivity(new Intent(getApplicationContext(), Dashboard.class));
+            SigninWithEmailandPassword(EmailAddressEditText.getText().toString().trim().toLowerCase(),PasswordEditText.getText().toString().trim());
+//            SigninWithEmailandPassword("sanjeevarora3735@gmail.com","Lenovo00!");
+//            startActivity(new Intent(getApplicationContext(), Dashboard.class));
         });
     }
 
@@ -85,13 +85,13 @@ public class Signin extends AppCompatActivity {
     public void onStart() {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
-//        FirebaseUser currentUser = mAuth.getCurrentUser();
-//        if (currentUser != null) {
-//            Toast.makeText(this, "There is someone ...", Toast.LENGTH_SHORT).show();
-//            updateUI(currentUser);
-//        }else{
-//            Toast.makeText(this, "No one is there ...", Toast.LENGTH_SHORT).show();
-//        }
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser != null) {
+            Toast.makeText(this, "There is someone ...", Toast.LENGTH_SHORT).show();
+            updateUI(currentUser);
+        }else{
+            Toast.makeText(this, "No one is there ...", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void updateUI(FirebaseUser currFirebaseUser) {

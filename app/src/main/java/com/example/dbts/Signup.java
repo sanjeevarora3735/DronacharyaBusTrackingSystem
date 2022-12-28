@@ -39,19 +39,19 @@ public class Signup extends AppCompatActivity {
         // FindViewById @ Buttons
         SignupTabButton = findViewById(R.id.Signup_Tab);
         SigninTabButton = findViewById(R.id.SigninButtonTab);
-        SignupButton    = findViewById(R.id.SignupButton);
+        SignupButton = findViewById(R.id.SignupButton);
 
         // FindViewById @ TextInputEditText
-        FullName   = findViewById(R.id.FullNameEditText);
-        Email      = findViewById(R.id.EmailEditText);
+        FullName = findViewById(R.id.FullNameEditText);
+        Email = findViewById(R.id.EmailEditText);
         Student_ID = findViewById(R.id.Student_IDEditText);
-        Password   = findViewById(R.id.PasswordEditText);
+        Password = findViewById(R.id.PasswordEditText);
 
         // FindViewById @ TextInputLayout
-        FullNameTextInputLayout   = findViewById(R.id.FullName);
-        EmailTextInputLayout      = findViewById(R.id.Email);
+        FullNameTextInputLayout = findViewById(R.id.FullName);
+        EmailTextInputLayout = findViewById(R.id.Email);
         Student_IDTextInputLayout = findViewById(R.id.Student_ID);
-        PasswordTextInputLayout   = findViewById(R.id.password);
+        PasswordTextInputLayout = findViewById(R.id.password);
 
         // Get Instance Of Firebase Authentication
         mAuth = FirebaseAuth.getInstance();
@@ -123,21 +123,31 @@ public class Signup extends AppCompatActivity {
                         Student_ID.setText("");
                         Email.setText("");
                         Password.setText("");
-//                                  mAuth.getCurrentUser().sendEmailVerification()
-//                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-//                                            @Override
-//                                            public void onComplete(@NonNull Task<Void> task) {
-//                                                if (task.isSuccessful()) {
-//                                                    Toast.makeText(getApplicationContext(), "Check Your Inbox to get your OTP ", Toast.LENGTH_SHORT).show();
-//                                                }
-//                                            }
-//                                        });
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Toast.makeText(Signup.this, "Signup Failed! Try Again ...", Toast.LENGTH_SHORT).show();
+                    }
+                });
+        ScholarData NewScholar = new ScholarData();
+        NewScholar.setName(fCollectedData.getNAME());
+        NewScholar.setRoll(fCollectedData.getSTUDENTID());
+        NewScholar.setSuper(false);
+        NewScholar.setSubscribed(true);
+
+        db.collection("identifying_information").document(fCollectedData.getEMAIL().toLowerCase())
+                .set(NewScholar)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Toast.makeText(Signup.this, "Account Created!!!", Toast.LENGTH_SHORT).show();
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(Signup.this, "Some Error Occurs", Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -164,8 +174,8 @@ public class Signup extends AppCompatActivity {
                                                 if (task.isSuccessful()) {
                                                     SaveInformationAsBackup(fCollectedData);
                                                     Toast.makeText(getApplicationContext(), "Success.", Toast.LENGTH_SHORT).show();
-                                                    Intent Verification_OTP = new Intent(Signup.this,account_verification.class);
-                                                    Verification_OTP.putExtra("VerificationCode","3951");
+                                                    Intent Verification_OTP = new Intent(Signup.this, account_verification.class);
+                                                    Verification_OTP.putExtra("VerificationCode", "3951");
                                                     startActivity(Verification_OTP);
                                                 }
                                             }

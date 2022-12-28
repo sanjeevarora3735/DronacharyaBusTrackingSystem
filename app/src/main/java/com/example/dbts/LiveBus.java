@@ -23,6 +23,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.mapbox.mapboxsdk.Mapbox;
+import com.mapbox.mapboxsdk.annotations.Icon;
+import com.mapbox.mapboxsdk.annotations.IconFactory;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
@@ -72,7 +74,9 @@ public class LiveBus extends AppCompatActivity implements OnMapReadyCallback {
         Bus_Number = getIntent().getExtras().getString("Bus_Number");
         FetchBusLivePoints(Bus_Number);
 
-
+//        IconFactory iconFactory = IconFactory.getInstance(LiveBus.this);
+//        Icon icon = iconFactory.fromResource(R.drawable.custom_marker___edited);
+//        LiveMark.setIcon(icon);
 
 
 
@@ -104,7 +108,6 @@ public class LiveBus extends AppCompatActivity implements OnMapReadyCallback {
                 } else {
                     Toast.makeText(LiveBus.this, "MapBoxMap is Null", Toast.LENGTH_SHORT).show();
                 }
-//                Toast.makeText(LiveBus.this, getBusLocation.getLatitude() + " ::  " + getBusLocation.getLongitude(), Toast.LENGTH_SHORT).show();
             }
 
             @Override

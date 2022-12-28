@@ -9,11 +9,13 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -37,6 +39,8 @@ public class NotificationFragment extends Fragment {
     private String mParam1;
     private String mParam2;
     private static int alreadySettedup = 0;
+    private FirebaseAuth mAuth;
+
 
     public NotificationFragment() {
         // Required empty public constructor
@@ -84,6 +88,8 @@ public class NotificationFragment extends Fragment {
             MessagePanelScrollView.fullScroll(MessagePanelScrollView.FOCUS_DOWN);
         });
 
+        mAuth = FirebaseAuth.getInstance();
+
         MessagePanelScrollView.getViewTreeObserver()
                 .addOnScrollChangedListener(() -> {
                     if (MessagePanelScrollView.getChildAt(0).getBottom()
@@ -100,6 +106,7 @@ public class NotificationFragment extends Fragment {
         view.findViewById(R.id.MessagePanel).setOnClickListener(v -> {
             initialJoining(null);
         });
+
 
         return view;
     }
@@ -126,7 +133,7 @@ public class NotificationFragment extends Fragment {
         SimpleTextView.setId(View.generateViewId());
         switch (InformationType) {
             case "DATE":
-                String TodayDate = new SimpleDateFormat("dd MMMM yyyy", Locale.getDefault()).format(new Date());
+                String TodayDate = new SimpleDateFormat("dd MMMM yyyy", Locale.getDefault()).format(new Date(mAuth.getCurrentUser().getMetadata().getCreationTimestamp()));
                 SimpleTextView.setText(TodayDate);
                 break;
             case "JOINING":

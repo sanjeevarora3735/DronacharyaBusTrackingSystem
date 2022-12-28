@@ -12,60 +12,60 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/AppBarLayout"
-        android:layout_width="match_parent"
-        android:layout_height="?actionBarSize"
-        app:elevation="1dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/ToolBar"
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/AppBarLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:minHeight="?actionBarSize"
-            android:paddingStart="0dp"
-            android:scrollbarAlwaysDrawVerticalTrack="true"
-            android:theme="@style/AppTheme.PopupOverlay"
-            app:elevation="0dp">
+            android:layout_height="?actionBarSize"
+            app:elevation="1dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/ToolBar"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:minHeight="?actionBarSize"
+                android:paddingStart="0dp"
+                android:scrollbarAlwaysDrawVerticalTrack="true"
+                android:theme="@style/AppTheme.PopupOverlay"
+                app:elevation="0dp">
 
-                <ImageView
-                    android:id="@+id/College_University_Logo"
-                    android:layout_width="250dp"
-                    android:layout_height="60dp"
-                    android:layout_marginStart="-40dp"
-                    android:adjustViewBounds="true"
-                    android:contentDescription="@string/app_name"
-                    android:cropToPadding="true"
-                    android:padding="10dp"
-                    android:src="@drawable/in_app_logo"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
-                <ImageButton
-                    android:id="@+id/SideBar"
-                    android:layout_width="30dp"
-                    android:layout_height="40dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginBottom="8dp"
-                    android:background="@color/white"
-                    android:src="@drawable/bars"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    <ImageView
+                        android:id="@+id/College_University_Logo"
+                        android:layout_width="250dp"
+                        android:layout_height="60dp"
+                        android:layout_marginStart="-40dp"
+                        android:adjustViewBounds="true"
+                        android:contentDescription="@string/app_name"
+                        android:cropToPadding="true"
+                        android:padding="10dp"
+                        android:src="@drawable/in_app_logo"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </androidx.appcompat.widget.Toolbar>
-    </com.google.android.material.appbar.AppBarLayout>
+                    <ImageButton
+                        android:id="@+id/SideBar"
+                        android:layout_width="30dp"
+                        android:layout_height="40dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginEnd="16dp"
+                        android:layout_marginBottom="8dp"
+                        android:background="@color/white"
+                        android:src="@drawable/bars"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.appcompat.widget.Toolbar>
+        </com.google.android.material.appbar.AppBarLayout>
 
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -205,6 +205,52 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.circularreveal.cardview.CircularRevealCardView>
 
+            <LinearLayout
+                android:id="@+id/RouteCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="20dp"
+                android:background="@drawable/subscription_end"
+                android:orientation="vertical"
+                android:padding="10dp"
+                app:layout_constraintBottom_toTopOf="@id/ViewBusSchedules"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/circularRevealCardView">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/mapbox_info_icon_default"
+                    android:drawablePadding="10dp"
+                    android:drawableTint="#86FFFFFF"
+                    android:fontFamily="sans-serif"
+                    android:paddingEnd="10dp"
+                    android:text="Your plan expires in 7 days, To continue your services please subscribe."
+                    android:textColor="@color/white"
+                    android:textSize="15dp" />
+
+                <TextView
+                    android:id="@+id/SubscribeButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="10dp"
+                    android:background="@drawable/subscribe"
+                    android:paddingStart="15dp"
+                    android:paddingTop="8dp"
+                    android:paddingEnd="15dp"
+                    android:paddingBottom="8dp"
+                    android:text="Subscibe"
+                    android:textColor="@color/white"
+                    android:textSize="15dp" />
+
+
+            </LinearLayout>
+
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/ViewBusSchedules"
                 android:layout_width="match_parent"
@@ -221,7 +267,7 @@
                 app:cornerRadius="15dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/circularRevealCardView" />
+                app:layout_constraintTop_toBottomOf="@+id/RouteCard" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/linearLayout3"
@@ -259,7 +305,7 @@
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" >
+                            app:layout_constraintTop_toTopOf="parent">
 
                         </com.mapbox.mapboxsdk.maps.MapView>
                     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -291,30 +337,31 @@
                     android:id="@+id/CurrentLocation"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
                     android:alpha=".4"
                     android:fontFamily="sans-serif-medium"
                     android:paddingStart="10dp"
                     android:paddingTop="5dp"
                     android:paddingEnd="10dp"
                     android:paddingBottom="5dp"
-                    android:layout_margin="10dp"
                     android:text="Location ..."
                     android:textColor="@color/white"
                     android:textSize="16sp"
                     android:translationZ="1dp"
                     app:layout_constraintBottom_toBottomOf="@id/MapCard"
                     app:layout_constraintStart_toStartOf="@id/MapCard" />
+
                 <TextView
                     android:id="@+id/DistanceLeft"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
                     android:alpha=".4"
                     android:fontFamily="sans-serif-medium"
                     android:paddingStart="10dp"
                     android:paddingTop="5dp"
                     android:paddingEnd="10dp"
                     android:paddingBottom="5dp"
-                    android:layout_margin="10dp"
                     android:text="Fetching..."
                     android:textColor="@color/white"
                     android:textSize="16sp"
@@ -337,6 +384,6 @@
                     app:layout_constraintEnd_toEndOf="@+id/MapCard" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
-    <!-- App Bar Layout-->
+        <!-- App Bar Layout-->
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

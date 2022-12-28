@@ -22,6 +22,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AutoCompleteTextView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -78,6 +79,7 @@ import com.mapbox.mapboxsdk.style.layers.SymbolLayer;
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
 import com.mapbox.mapboxsdk.utils.BitmapUtils;
 
+import okhttp3.Route;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -126,6 +128,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     private Marker NearestBusStop;
     private TextView CurrentLocationView, DistanceLeft;
     private DatabaseReference mDatabase;
+    private TextView SubscribeButton;
 
 
     public HomeFragment() {
@@ -174,6 +177,10 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         if (view == null) {
             view = inflater.inflate(R.layout.fragment_home, container, false);
         }
+
+        LinearLayout RouteCard = view.findViewById(R.id.RouteCard);
+
+
         // For Routes Selecttion @ Only Root User
         BusRouteAutoCompleteTextView = view.findViewById(R.id.BusRouteAutoCompleteTextView);
 
@@ -199,6 +206,18 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
 
         // Getting SharedPreferences to save data offline
         sharedPreference_ScholarData = getContext().getSharedPreferences("ScholarData", getContext().MODE_PRIVATE);
+
+
+        //Subscribe Button
+        SubscribeButton = view.findViewById(R.id.SubscribeButton);
+        SubscribeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                Toast.makeText(getContext(), "Subscribed Function Called!", Toast.LENGTH_SHORT).show();
+                RouteCard.setVisibility(View.GONE);
+            }
+        });
+        SubscribeButton.performClick();
 
         // Firebase Instances (Firestore)
         mAuth = FirebaseAuth.getInstance();
@@ -326,7 +345,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         locationManager.requestLocationUpdates(
                 LocationManager.GPS_PROVIDER,
                 1000,
-                10,
+                1,
                 mLocationListener);
 
 //        locationManager.removeUpdates(mLocationListener); // To Stop location Updates...
@@ -553,6 +572,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
 
     // Returning the AllotedBusStoppagePoint from the firebase :
     private Point AllotedBusStoppagePoint() {
-        return Point.fromLngLat(FinalScholarData.getPointLongitude(), FinalScholarData.getPointLatitude());
-    }
+            return Point.fromLngLat(FinalScholarData.getPointLongitude(), FinalScholarData.getPointLatitude());
+
+        }
 }

@@ -1,11 +1,20 @@
 package com.example.dbts;
 
+import static androidx.core.content.ContextCompat.getSystemService;
+
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatDelegate;
@@ -18,6 +27,12 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import org.w3c.dom.Text;
+
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -45,6 +60,7 @@ public class ProfileFragment extends Fragment {
     private ConstraintLayout HelpSupportConstraintLayout;
     private ConstraintLayout PricingArrowConstraintLayout;
     private ConstraintLayout SettingsConstraintLayout;
+    private ConstraintLayout LogConstraintLayout;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -84,8 +100,14 @@ public class ProfileFragment extends Fragment {
         if (view == null) {
             view = inflater.inflate(R.layout.fragment_profile, container, false);
         }
-        mAuth = FirebaseAuth.getInstance();
-        UpdateProfileData();
+
+        try{
+
+            mAuth = FirebaseAuth.getInstance();
+            UpdateProfileData();
+        }catch (Exception e){
+            Toast.makeText(getContext(), String.valueOf(e.getMessage()), Toast.LENGTH_SHORT).show();
+        }
 
         //InviteFriends Linear Layout :
         InviteFriendsArrow = view.findViewById(R.id.InviteFriendsArrow);
@@ -98,7 +120,15 @@ public class ProfileFragment extends Fragment {
         HelpSupportConstraintLayout = view.findViewById(R.id.HelpSupportConstraintLayout);
         SettingsConstraintLayout = view.findViewById(R.id.SettingsConstraintLayout);
         PricingArrowConstraintLayout = view.findViewById(R.id.PricingArrowConstraintLayout);
+        LogConstraintLayout = view.findViewById(R.id.LogOutConstraintLayout);
 
+        LogConstraintLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mAuth.signOut();
+                startActivity(new Intent(getContext(),Signin.class));
+            }
+        });
 
         InviteFriendsConstraintLayout.setOnClickListener(view -> {
             startActivity(new Intent(getContext(), Maintenance.class));
@@ -153,6 +183,10 @@ public class ProfileFragment extends Fragment {
                 @Override
                 public void onSuccess(DocumentSnapshot documentSnapshot) {
                     ScholarData CurrentScholarDataObj = documentSnapshot.toObject(ScholarData.class);
+                    TextView Email = view.findViewById(R.id.UserProfileEmail);
+                    Email.setText(documentSnapshot.getId().toString());
+                    TextView Name = view.findViewById(R.id.UserProfileName);
+                    Name.setText(CurrentScholarDataObj.getName());
                 }
             });
         } else {

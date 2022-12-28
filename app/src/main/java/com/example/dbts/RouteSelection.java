@@ -19,6 +19,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -32,14 +33,15 @@ import java.util.Locale;
 public class RouteSelection extends AppCompatActivity {
 
     private final int ImageButtonStarting_ID = 2897;
+    BusesData TravellingData, FinalTravellingData;
     private Boolean isRouteSetted = true;
     // Initializing some important variable for further use :
     private Button ContinueButton;
     private Toolbar toolbar;
     private TextView SelectedRouteDescription, ErrorText;
     private String StoppagePointList;
-    BusesData TravellingData, FinalTravellingData;
     private boolean TravellingDataAccessed = false, isRouteSelected = false;
+    private int SelectedRouteNumber;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,13 +61,20 @@ public class RouteSelection extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
 
-
         // Setting up the on-click listener for the ContinueButton
         ContinueButton.setOnClickListener(v ->
         {
-            if(isRouteSelected){
-            startActivity(new Intent(RouteSelection.this, locationRequest.class));}
-            else {
+            if (isRouteSelected) {
+                startActivity(new Intent(RouteSelection.this, locationRequest.class));
+                FirebaseFirestore.getInstance().collection("identifying_information")
+                        .document(FirebaseAuth.getInstance().getCurrentUser().getEmail().toLowerCase(Locale.ROOT))
+                        .update("route",SelectedRouteNumber).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                Toast.makeText(RouteSelection.this, "Route Updated " + String.valueOf(SelectedRouteNumber), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+            } else {
                 ErrorText.setVisibility(View.VISIBLE);
             }
         });
@@ -87,24 +96,24 @@ public class RouteSelection extends AppCompatActivity {
     protected void onStart() {
         // Getting the no. of available routes for which we have to create options
         super.onStart();
-        if(isRouteSetted){
+        if (isRouteSetted) {
 
-        DocumentReference docRef = FirebaseFirestore.getInstance().collection("BUSES").document("Routes");
-        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-                        String available_routes = String.valueOf((document.getData().get("Available_Routes")));
-                        SetupAllRoutesButtons(Integer.parseInt(available_routes));
+            DocumentReference docRef = FirebaseFirestore.getInstance().collection("BUSES").document("Routes");
+            docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            String available_routes = String.valueOf((document.getData().get("Available_Routes")));
+                            SetupAllRoutesButtons(Integer.parseInt(available_routes));
+                        }
                     }
                 }
-            }
-        });
+            });
 
-        isRouteSetted = false;
-    }else {
+            isRouteSetted = false;
+        } else {
             Toast.makeText(this, "Do Nothing", Toast.LENGTH_SHORT).show();
         }
 
@@ -113,7 +122,7 @@ public class RouteSelection extends AppCompatActivity {
     // What we have to when someone select the route via onclick
     private void onRouteSelection(ImageButton routeImageButton, int Routes) {
         int Range = Routes + ImageButtonStarting_ID;
-        for (int i = ImageButtonStarting_ID+1; i <= Range; i++) {
+        for (int i = ImageButtonStarting_ID + 1; i <= Range; i++) {
             ImageButton xImageButton = findViewById(i);
             xImageButton.setClickable(true);
             xImageButton.setBackgroundResource(R.drawable.route_selector);
@@ -121,8 +130,9 @@ public class RouteSelection extends AppCompatActivity {
         routeImageButton.setBackgroundResource(R.drawable.route_selected);
         routeImageButton.setClickable(false);
         SettingUpStoppagePoints(routeImageButton.getId() - ImageButtonStarting_ID);
+        SelectedRouteNumber = routeImageButton.getId() - ImageButtonStarting_ID;
         isRouteSelected = true;
-        if(TravellingDataAccessed){
+        if (TravellingDataAccessed) {
 //            Toast.makeText(this, "Fucked Up", Toast.LENGTH_SHORT).show();
             SelectedRouteDescription.setText("No routes found with selected route no. please try again later !");
         }
@@ -201,7 +211,7 @@ public class RouteSelection extends AppCompatActivity {
 
         String UpdatedRoute = "No routes found with selected route no. please try again later !";
 
-        SetupTextViewDescription(UpdatedRoute,FinalTravellingData);
+        SetupTextViewDescription(UpdatedRoute, FinalTravellingData);
 
 
     }
@@ -227,7 +237,6 @@ public class RouteSelection extends AppCompatActivity {
                         }
                     }
                 });
-
 
     }
 

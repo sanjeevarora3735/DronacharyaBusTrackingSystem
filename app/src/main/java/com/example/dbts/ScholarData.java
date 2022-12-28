@@ -4,7 +4,7 @@ import com.google.firebase.Timestamp;
 
 public class ScholarData {
 
-    private double PointLatitude, PointLongitude,SharreableLocation_Lat,SharreableLocation_Long;
+    private double PointLatitude = 28.577471, PointLongitude = 77.173738,SharreableLocation_Lat,SharreableLocation_Long;
     private String LocationName, Name, Branch;
     private int Route, Graduation, Mobile, Roll, Semester, SubscriptionFees;
     private boolean Subscribed, Super;

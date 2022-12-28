@@ -113,6 +113,7 @@ public class ScheduleFragment extends Fragment {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 BusesData TravellingData = document.toObject(BusesData.class);
+                                Log.d("Stoppage Points", "onComplete: " + TravellingData.getStations());
                                 for (int Counter = 0; Counter < TravellingData.getStations().size(); Counter++) {
                                     boolean CampusPosition = Counter == TravellingData.getStations().size() - 1;
                                     CreateStoppageField_ConstraintLayouts(route_number, TravellingData.getStations().get(Counter), TravellingData.getStations_Time().get(Counter), Counter, CampusPosition, false);
